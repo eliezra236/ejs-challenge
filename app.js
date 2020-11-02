@@ -3,6 +3,8 @@
 const express = require("express");
 const ejs = require("ejs");
 
+let posts = [];
+
 const homeStartingContent =
   "Lacus vel facilisis volutpat est velit egestas dui id ornare. Semper auctor neque vitae tempus quam. Sit amet cursus sit amet dictum sit amet justo. Viverra tellus in hac habitasse. Imperdiet proin fermentum leo vel orci porta. Donec ultrices tincidunt arcu non sodales neque sodales ut. Mattis molestie a iaculis at erat pellentesque adipiscing. Magnis dis parturient montes nascetur ridiculus mus mauris vitae ultricies. Adipiscing elit ut aliquam purus sit amet luctus venenatis lectus. Ultrices vitae auctor eu augue ut lectus arcu bibendum at. Odio euismod lacinia at quis risus sed vulputate odio ut. Cursus mattis molestie a iaculis at erat pellentesque adipiscing.";
 const aboutContent =
@@ -20,6 +22,8 @@ app.use(express.static("public"));
 app.listen(3000, function () {
   console.log("Server started on port 3000");
 });
+
+// --------------------------------- gets and posts ------------------------------------
 
 app.get("/", (req, res) =>
   res.render("home.ejs", { PhargraphText: homeStartingContent })
@@ -40,7 +44,8 @@ app.post("/compose", function (req, res) {
     articleTitle: req.body.articleTitle,
     articleBody: req.body.articleBody,
   };
-  console.log(article);
+  posts.push(article);
+  console.log(posts);
 
-  res.redirect("/compose");
+  res.redirect("/");
 });
