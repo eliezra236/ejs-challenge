@@ -2,6 +2,7 @@
 
 const express = require("express");
 const ejs = require("ejs");
+const _ = require("lodash");
 
 let posts = [];
 
@@ -31,6 +32,35 @@ app.get("/", (req, res) =>
     allPosts: posts,
   })
 );
+
+app.get("/posts/:topic", function (req, res) {
+  let searchedPost = _.lowerCase(req.params.topic);
+  let foundMatch = null;
+
+  for(let post of posts) {
+        if (_.lowerCase(post.articleTitle) === searchedPost) {
+              res.render("post", {
+                postTitle: post.articleTitle,
+                postBody: post.articleBody,
+              });
+              return;
+        }
+  }
+  console.log("Couldn't find a match")
+  // posts.forEach(function (post) {
+  //   if (_.lowerCase(post.articleTitle) === searchedPost) {
+  //     foundMatch = post;
+  //   }
+  // });
+  // if (foundMatch !== null) {
+  //   res.render("post", {
+  //     postTitle: foundMatch.articleTitle,
+  //     postBody: foundMatch.articleBody,
+  //   });
+  // } else {
+  //   res.send("Eror 404")
+  // }
+});
 
 app.get("/about", (req, res) =>
   res.render("about.ejs", { PhargraphText: aboutContent })

@@ -6,7 +6,7 @@
 
 <% allPosts.forEach(function(article) { %>
     <h1> <%= article.articleTitle %> </h1>
-    <p> <%= article.articleBody %>  </p>
+    <p> <%= article.articleBody.slice(0, 100) + " ..." %> <a href="/posts/<%= article.articleTitle %>">read more</a> </p>
 <% }) %>
 
 <%- include('partials/footer') %>
