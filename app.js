@@ -26,7 +26,10 @@ app.listen(3000, function () {
 // --------------------------------- gets and posts ------------------------------------
 
 app.get("/", (req, res) =>
-  res.render("home.ejs", { PhargraphText: homeStartingContent })
+  res.render("home.ejs", {
+    PhargraphText: homeStartingContent,
+    allPosts: posts,
+  })
 );
 
 app.get("/about", (req, res) =>

@@ -4,4 +4,9 @@
 
 <p><%= PhargraphText %></p>
 
+<% allPosts.forEach(function(article) { %>
+    <h1> <%= article.articleTitle %> </h1>
+    <p> <%= article.articleBody %>  </p>
+<% }) %>
+
 <%- include('partials/footer') %>
