@@ -5,8 +5,12 @@
 <p><%= PhargraphText %></p>
 
 <% allPosts.forEach(function(article) { %>
+    <% console.log("in allposts in home.ejs") %> 
     <h1> <%= article.articleTitle %> </h1>
-    <p> <%= article.articleBody.slice(0, 100) + " ..." %> <a href="/posts/<%= article.articleTitle %>">read more</a> </p>
+    <p> <%= article.articleBody.slice(0, 100) + " ..." %> <a href="/posts/<%= article._id %>">read more</a> </p>
 <% }) %>
 
 <%- include('partials/footer') %>
+
+
+

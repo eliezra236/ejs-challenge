@@ -3,8 +3,8 @@
 const express = require("express");
 const ejs = require("ejs");
 const _ = require("lodash");
+const mongoose = require("mongoose");
 
-let posts = [];
 
 const homeStartingContent =
   "Lacus vel facilisis volutpat est velit egestas dui id ornare. Semper auctor neque vitae tempus quam. Sit amet cursus sit amet dictum sit amet justo. Viverra tellus in hac habitasse. Imperdiet proin fermentum leo vel orci porta. Donec ultrices tincidunt arcu non sodales neque sodales ut. Mattis molestie a iaculis at erat pellentesque adipiscing. Magnis dis parturient montes nascetur ridiculus mus mauris vitae ultricies. Adipiscing elit ut aliquam purus sit amet luctus venenatis lectus. Ultrices vitae auctor eu augue ut lectus arcu bibendum at. Odio euismod lacinia at quis risus sed vulputate odio ut. Cursus mattis molestie a iaculis at erat pellentesque adipiscing.";
@@ -24,42 +24,55 @@ app.listen(3000, function () {
   console.log("Server started on port 3000");
 });
 
+mongoose.connect("mongodb://localhost:27017/blogDB", {useNewUrlParser: true});
+
+const articleSchema = new mongoose.Schema({
+  articleTitle: String,
+  articleBody: String,
+});
+
+const Article = mongoose.model("Article", articleSchema);
+
+
+
 // --------------------------------- gets and posts ------------------------------------
 
-app.get("/", (req, res) =>
-  res.render("home.ejs", {
-    PhargraphText: homeStartingContent,
-    allPosts: posts,
+app.get("/", function(req, res) {
+
+  Article.find({}, function(err, articles) {
+    if(err) {
+      console.log(err)
+    }
+    res.render("home.ejs", {
+      PhargraphText: homeStartingContent,
+      allPosts: articles,
+    });
   })
-);
+});
 
-app.get("/posts/:topic", function (req, res) {
-  let searchedPost = _.lowerCase(req.params.topic);
-  let foundMatch = null;
+app.get("/posts/:id", function (req, res) {
+  let articleID = req.params.id;
 
-  for(let post of posts) {
-        if (_.lowerCase(post.articleTitle) === searchedPost) {
-              res.render("post", {
-                postTitle: post.articleTitle,
-                postBody: post.articleBody,
-              });
-              return;
-        }
-  }
-  console.log("Couldn't find a match")
-  // posts.forEach(function (post) {
+  Article.findById(articleID, function(err, foundArticle) {
+    if(err) {
+      console.log("Error when looking for " + articleID);
+    } else {
+      res.render("post", {
+        article: foundArticle
+      })
+    }
+  })
+
+  // for (let post of posts) {
   //   if (_.lowerCase(post.articleTitle) === searchedPost) {
-  //     foundMatch = post;
+  //     res.render("post", {
+  //       postTitle: post.articleTitle,
+  //       postBody: post.articleBody,
+  //     });
+  //     return;
   //   }
-  // });
-  // if (foundMatch !== null) {
-  //   res.render("post", {
-  //     postTitle: foundMatch.articleTitle,
-  //     postBody: foundMatch.articleBody,
-  //   });
-  // } else {
-  //   res.send("Eror 404")
   // }
+  console.log("Couldn't find a match");
 });
 
 app.get("/about", (req, res) =>
@@ -73,12 +86,12 @@ app.get("/contact", (req, res) =>
 app.get("/compose", (req, res) => res.render("compose"));
 
 app.post("/compose", function (req, res) {
-  let article = {
+  let article = new Article({
     articleTitle: req.body.articleTitle,
     articleBody: req.body.articleBody,
-  };
-  posts.push(article);
-  console.log(posts);
+  });
+  article.save();
 
   res.redirect("/");
 });
+
